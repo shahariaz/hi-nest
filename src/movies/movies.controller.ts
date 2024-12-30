@@ -9,16 +9,19 @@ import {
   Patch,
   Body,
 } from '@nestjs/common';
+import { MoviesService } from './movies.service';
+import { Movie } from './entities/movie.entity';
 
 @Controller('movies')
 export class MoviesController {
+  constructor(private readonly moviesService: MoviesService) {}
   @Get()
   getAll() {
-    return 'This will return all movies';
+    return this.moviesService.getAll();
   }
   @Get('/:id')
   getOne(@Param('id') id: string) {
-    return `This will return one movie with the id: ${id}`;
+    return this.moviesService.getOne(id);
   }
   @Post()
   create(@Body() movieData) {
@@ -34,7 +37,8 @@ export class MoviesController {
     return `This will update a movie with the id: ${id}`;
   }
   @Patch('/:id')
-  partialUpdate(@Param('id') id: string) {
-    return `This will partially update a movie with the id: ${id}`;
+  partialUpdate(@Param('id') id: string, @Body() movieData: Movie) {
+    const update = this.moviesService.update(id, movieData);
+    return update;
   }
 }
